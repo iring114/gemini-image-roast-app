@@ -73,7 +73,7 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            padding: 20px;
+            padding: 10px;
             box-sizing: border-box;
             color: var(--text-color); /* Slightly softer text color */
             transition: var(--theme-transition);
@@ -91,6 +91,7 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             position: relative; /* For pseudo-elements */
             overflow: hidden; /* Keep decorations contained if they go outside bounds */
+            box-sizing: border-box; /* Ensure padding is included in width calculation */
         }
 
         /* Simple decorative dots/sparkles using pseudo-elements */
@@ -135,8 +136,8 @@
         body::after {
             content: '😒'; /* Rolling eyes emoji, a classic吐槽 face */
             position: fixed; /* Fixed position so it stays in place during scroll */
-            font-size: 30vw; /* Responsive size based on viewport width */
-            color: rgba(0, 0, 0, 0.15); /* Increased visibility */
+            font-size: 20vw; /* Reduced size for better mobile experience */
+            color: rgba(0, 0, 0, 0.08); /* Reduced opacity for mobile */
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) rotate(-15deg); /* Centered and slightly rotated */
@@ -1026,23 +1027,45 @@
 
         /* Mobile and small tablet adjustments */
         @media (max-width: 768px) {
+            body {
+                padding: 5px;
+            }
+            
+            body::after {
+                font-size: 15vw; /* Smaller emoji on mobile */
+                color: rgba(0, 0, 0, 0.05); /* Even more subtle */
+            }
+            
             .container {
-                padding: 25px 20px;
-                margin: 15px;
+                padding: 20px 15px;
+                margin: 5px;
+                max-width: calc(100vw - 20px);
+                border-radius: 15px;
             }
+            
             h1 {
-                font-size: 1.8em;
+                font-size: 1.6em;
+                margin-bottom: 20px;
             }
+            
+            .upload-section {
+                padding: 15px;
+                margin-bottom: 20px;
+            }
+            
             button, input[type="file"]::file-selector-button {
-                padding: 10px 20px;
-                font-size: 0.95em;
+                padding: 12px 20px;
+                font-size: 0.9em;
             }
-            #imagePreview img {
+            
+            #imagePreview {
                 max-height: 250px;
             }
-            #aiResponse {
-                font-size: 1em;
+            
+            #aiComment {
+                font-size: 0.95em;
                 padding: 15px;
+                line-height: 1.5;
             }
             
             .top-controls {
@@ -1061,36 +1084,63 @@
         }
 
         @media (max-width: 480px) {
+            body {
+                padding: 2px;
+            }
+            
+            body::after {
+                font-size: 12vw; /* Even smaller on very small screens */
+                color: rgba(0, 0, 0, 0.03);
+            }
+            
             h1 {
-                font-size: 1.6em;
+                font-size: 1.4em;
+                margin-bottom: 15px;
             }
+            
             .container {
-                border-radius: 20px;
-                padding: 20px 15px;
+                border-radius: 12px;
+                padding: 15px 10px;
+                margin: 2px;
+                max-width: calc(100vw - 10px);
             }
+            
+            .upload-section {
+                padding: 10px;
+                margin-bottom: 15px;
+            }
+            
             button, input[type="file"]::file-selector-button {
                 width: 100%;
-                padding: 12px;
+                padding: 10px;
+                font-size: 0.85em;
             }
+            
             #uploadForm {
                 display: flex;
                 flex-direction: column;
                 align-items: center;
             }
-            #imagePreview img {
-                max-height: 200px;
+            
+            #imagePreview {
+                max-height: 180px;
             }
-            #aiResponse {
-                font-size: 0.9em;
+            
+            #aiComment {
+                font-size: 0.85em;
+                padding: 12px;
+                line-height: 1.4;
             }
-             /* Make sparkles smaller on mobile */
+            
+            /* Make sparkles smaller on mobile */
             .container::before, .container::after {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .container::after {
                 width: 60px;
                 height: 60px;
-            }
-            .container::after {
-                width: 90px;
-                height: 90px;
             }
         }
 
