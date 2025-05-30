@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 嘴砲你的圖片網站</title>
+    <title>AI 嘴砲你的圖片</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&family=Poppins:wght@300;400;600&display=swap');
 
@@ -1310,8 +1310,8 @@
                 <label class="setting-label">🎭 評論風格</label>
                 <div class="style-options">
                     <button class="style-btn active" data-style="mild">😊 溫和</button>
-                <button class="style-btn" data-style="medium">😈 毒舌</button>
-                <button class="style-btn" data-style="spicy">💀 極毒</button>
+                <button class="style-btn" data-style="medium">😈 嘴砲</button>
+                <button class="style-btn" data-style="spicy">💀 極嘴砲</button>
                 </div>
             </div>
             
@@ -1326,7 +1326,7 @@
             </div>
         </div>
         
-        <h1>📸 AI 毒舌評論產生器 🤪</h1>
+        <h1>📸 AI 嘴砲評論產生器 🤪</h1>
         
         <!-- History Panel -->
         <div id="historyPanel" class="history-panel" style="display: none;">
@@ -1368,13 +1368,13 @@
                     </div>
                 </div>
             </div>
-            <button type="submit" id="submitBtn">讓 AI 毒舌一下！</button>
+            <button type="submit" id="submitBtn">讓 AI 嘴砲一下！</button>
         </form>
 
         <div id="loading" class="loader" style="display: none;">
             <div class="loading-content">
                 <div class="spinner"></div>
-                <p>AI 正在毒舌中...</p>
+                <p>AI 正在嘴砲中...</p>
                 <div class="progress-container">
                     <div class="progress-bar" id="progressBar"></div>
                     <div class="progress-text" id="progressText">0%</div>
@@ -1402,12 +1402,12 @@
         </div>
 
         <div id="aiResponseContainer" style="display: none;">
-            <h2>🧐 AI 大師的毒舌點評：</h2>
+            <h2>🧐 AI 大師的嘴砲點評：</h2>
             <div id="aiResponse" class="ai-comment-box"></div>
             
             <!-- Rating System -->
             <div id="ratingSection" class="rating-section" style="display: none;">
-                <h3>💀 毒舌程度評分：</h3>
+                <h3>💀 嘴砲程度評分：</h3>
                 <div class="rating-stars">
                     <span class="star" data-rating="1">💀</span>
                     <span class="star" data-rating="2">💀</span>
@@ -1415,12 +1415,12 @@
                     <span class="star" data-rating="4">💀</span>
                     <span class="star" data-rating="5">💀</span>
                 </div>
-                <div class="rating-text">點擊評分毒舌程度</div>
+                <div class="rating-text">點擊評分嘴砲程度</div>
             </div>
             
             <!-- Share Buttons -->
             <div id="shareSection" class="share-section" style="display: none;">
-                <h3>📤 分享這個毒舌評論：</h3>
+                <h3>📤 分享這個嘴砲評論：</h3>
                 <div class="share-buttons">
                     <button class="share-btn facebook" onclick="shareToFacebook()">📘 Facebook</button>
                     <button class="share-btn twitter" onclick="shareToTwitter()">🐦 Twitter</button>
@@ -1569,13 +1569,13 @@
         function updateRatingText(rating) {
             const ratingText = document.querySelector('.rating-text');
             const texts = {
-                1: '輕微毒舌 😏',
-                2: '中等毒舌 😈',
-                3: '重度毒舌 🔥',
-                4: '極度毒舌 💀',
-                5: '毒舌之王 💀💀💀'
+                1: '輕微嘴砲 😏',
+                2: '中等嘴砲 😈',
+                3: '重度嘴砲 🔥',
+                4: '極度嘴砲 💀',
+                5: '嘴砲之王 💀💀💀'
             };
-            ratingText.textContent = texts[rating] || '點擊評分毒舌程度';
+            ratingText.textContent = texts[rating] || '點擊評分嘴砲程度';
         }
 
         function playClickSound() {
@@ -1778,14 +1778,14 @@
                         'ja': 'この画像を優しくユーモラスにコメントしてください。親しみやすく面白い口調で'
                     },
                     'medium': {
-                        'zh': '你是一位毒舌圖像評論家，擅長用尖酸、嘲諷、酸民般的語氣評論使用者上傳的圖片。請用不超過 100 字的評論，語氣刻薄但不涉及仇恨或違法內容，並且幽默毒辣。請評論這張圖片的外觀、風格、構圖、拍攝內容，重點是要諷刺好笑',
+                        'zh': '你是一位嘴砲圖像評論家，擅長用尖酸、嘲諷、酸民般的語氣評論使用者上傳的圖片。請用不超過 100 字的評論，語氣刻薄但不涉及仇恨或違法內容，並且幽默毒辣。請評論這張圖片的外觀、風格、構圖、拍攝內容，重點是要諷刺好笑',
                         'en': 'You are a sharp-tongued image critic who excels at commenting on user-uploaded images with sarcastic, mocking, and cynical tone. Please provide a comment of no more than 100 words, with a cutting tone that avoids hate speech or illegal content, but is humorously vicious. Comment on the appearance, style, composition, and content of this image, focusing on satirical humor',
-                        'ja': 'あなたは毒舌な画像評論家で、ユーザーがアップロードした画像を皮肉で嘲笑的で冷笑的な口調でコメントするのが得意です。100文字以内で、ヘイトスピーチや違法コンテンツを避けながらも、ユーモラスに辛辣なコメントをしてください。この画像の外観、スタイル、構図、撮影内容について、風刺的なユーモアに焦点を当ててコメントしてください'
+                        'ja': 'あなたは嘴砲な画像評論家で、ユーザーがアップロードした画像を皮肉で嘲笑的で冷笑的な口調でコメントするのが得意です。100文字以内で、ヘイトスピーチや違法コンテンツを避けながらも、ユーモラスに辛辣なコメントをしてください。この画像の外観、スタイル、構図、撮影内容について、風刺的なユーモアに焦点を当ててコメントしてください'
                     },
                     'spicy': {
-                        'zh': '你是一位極度毒舌的圖像評論家，以最尖酸刻薄、諷刺挖苦的語氣著稱。請用最毒辣的方式評論這張圖片，語氣要極度刻薄、嘲諷、酸民風格，但保持幽默感且不涉及人身攻擊。請狠狠吐槽這張圖片的一切，包括構圖、美感、拍攝技巧、內容選擇等，要讓人笑到肚子痛的那種毒舌',
+                        'zh': '你是一位極度嘴砲的圖像評論家，以最尖酸刻薄、諷刺挖苦的語氣著稱。請用最毒辣的方式評論這張圖片，語氣要極度刻薄、嘲諷、酸民風格，但保持幽默感且不涉及人身攻擊。請狠狠吐槽這張圖片的一切，包括構圖、美感、拍攝技巧、內容選擇等，要讓人笑到肚子痛的那種嘴砲',
                         'en': 'You are an extremely sharp-tongued image critic known for the most sarcastic, cutting, and mocking tone. Please comment on this image in the most vicious way possible, with an extremely harsh, sarcastic, and cynical style, while maintaining humor and avoiding personal attacks. Please ruthlessly roast everything about this image, including composition, aesthetics, photography skills, content choices, etc., in a way that makes people laugh until their stomachs hurt',
-                        'ja': 'あなたは最も皮肉で辛辣で嘲笑的な口調で知られる極度に毒舌な画像評論家です。この画像を可能な限り辛辣な方法でコメントしてください。極度に厳しく、皮肉で冷笑的なスタイルで、ユーモアを保ちながら個人攻撃は避けてください。構図、美学、撮影技術、コンテンツの選択など、この画像のすべてを容赦なく批判し、お腹が痛くなるまで笑わせるような毒舌でお願いします'
+                        'ja': 'あなたは最も皮肉で辛辣で嘲笑的な口調で知られる極度に嘴砲な画像評論家です。この画像を可能な限り辛辣な方法でコメントしてください。極度に厳しく、皮肉で冷笑的なスタイルで、ユーモアを保ちながら個人攻撃は避けてください。構図、美学、撮影技術、コンテンツの選択など、この画像のすべてを容赦なく批判し、お腹が痛くなるまで笑わせるような嘴砲でお願いします'
                     }
                 };
                 return stylePrompts[this.currentStyle][this.currentLanguage];
@@ -1939,7 +1939,7 @@
             }
 
             getFilteredImageData() {
-                return this.canvas.toDataURL('image/jpeg', 0.8);
+                return this.canvas.toDataURL('image/jpeg', 1.0);
             }
         }
 
@@ -2050,24 +2050,24 @@
         
         function shareToFacebook() {
             const url = encodeURIComponent(window.location.href);
-            const text = encodeURIComponent(`AI 毒舌評論：${currentComment}`);
+            const text = encodeURIComponent(`AI 嘴砲評論：${currentComment}`);
             window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${text}`, '_blank');
         }
         
         function shareToTwitter() {
             const url = encodeURIComponent(window.location.href);
-            const text = encodeURIComponent(`AI 毒舌評論：${currentComment}`);
+            const text = encodeURIComponent(`AI 嘴砲評論：${currentComment}`);
             window.open(`https://twitter.com/intent/tweet?url=${url}&text=${text}`, '_blank');
         }
         
         function shareToLine() {
             const url = encodeURIComponent(window.location.href);
-            const text = encodeURIComponent(`AI 毒舌評論：${currentComment}`);
+            const text = encodeURIComponent(`AI 嘴砲評論：${currentComment}`);
             window.open(`https://social-plugins.line.me/lineit/share?url=${url}&text=${text}`, '_blank');
         }
         
         function copyToClipboard() {
-            const textToCopy = `AI 毒舌評論：${currentComment}\n\n查看更多：${window.location.href}`;
+            const textToCopy = `AI 嘴砲評論：${currentComment}\n\n查看更多：${window.location.href}`;
             navigator.clipboard.writeText(textToCopy).then(() => {
                 const copyBtn = document.querySelector('.share-btn.copy');
                 const originalText = copyBtn.textContent;
@@ -2142,7 +2142,7 @@
                         formData.append('stylePrompt', advancedSettings.getStylePrompt());
                     }
                     submitFormData(formData);
-                }, 'image/jpeg', 0.8);
+                }, 'image/jpeg', 1.0);
                 return; // Exit early since we're handling async
             } else {
                 formData.append('image', imageFile);
@@ -2162,7 +2162,7 @@
 
             loadingIndicator.style.display = 'block';
             submitBtn.disabled = true;
-            submitBtn.textContent = '毒舌中...';
+            submitBtn.textContent = '嘴砲中...';
             submitBtn.classList.add('pulse-loading');
             aiResponseDiv.textContent = '';
             aiResponseDiv.classList.add('loading'); // Add loading class for visual feedback
@@ -2267,7 +2267,7 @@
                 updateProgress(0);
                 loadingIndicator.style.display = 'none';
                 submitBtn.disabled = false;
-                submitBtn.textContent = '讓 AI 毒舌一下！';
+                submitBtn.textContent = '讓 AI 嘴砲一下！';
                 submitBtn.classList.remove('pulse-loading');
                 aiResponseDiv.classList.remove('loading'); // Remove loading class
             }
