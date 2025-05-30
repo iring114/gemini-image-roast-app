@@ -2,6 +2,8 @@ const express = require('express');
 const { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold, Modality } = require("@google/generative-ai");
 const multer = require('multer');
 const fs = require('fs');
+const AWS = require('aws-sdk');
+const { v4: uuidv4 } = require('uuid');
 const path = require('path');
 const dotenv = require('dotenv');
 
@@ -12,7 +14,24 @@ const port = process.env.PORT || 3000;
 dotenv.config();
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 // TODO: Add your Text-to-Image API Key here in .env and uncomment
-// const TEXT_TO_IMAGE_API_KEY = process.env.TEXT_TO_IMAGE_API_KEY; 
+// const TEXT_TO_IMAGE_API_KEY = process.env.TEXT_TO_IMAGE_API_KEY;
+
+const AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID;
+const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY;
+const AWS_S3_BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME;
+const AWS_S3_REGION = process.env.AWS_S3_REGION;
+
+if (!GEMINI_API_KEY || !AWS_ACCESS_KEY_ID || !AWS_SECRET_ACCESS_KEY || !AWS_S3_BUCKET_NAME || !AWS_S3_REGION) {
+    console.error("Error: Missing one or more required environment variables (GEMINI_API_KEY, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_S3_BUCKET_NAME, AWS_S3_REGION).");
+    process.exit(1);
+}
+
+// --- AWS S3 Setup ---
+const s3 = new AWS.S3({
+    accessKeyId: AWS_ACCESS_KEY_ID,
+    secretAccessKey: AWS_SECRET_ACCESS_KEY,
+    region: AWS_S3_REGION
+});
 
 if (!GEMINI_API_KEY) {
     console.error("Error: GEMINI_API_KEY is not set in .env file.");
@@ -25,15 +44,16 @@ if (!fs.existsSync(UPLOADS_DIR)) {
     fs.mkdirSync(UPLOADS_DIR, { recursive: true });
 }
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, UPLOADS_DIR);
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
-    }
-});
+// const storage = multer.diskStorage({ // Changed to memoryStorage for S3 upload
+//     destination: (req, file, cb) => {
+//         cb(null, UPLOADS_DIR);
+//     },
+//     filename: (req, file, cb) => {
+//         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+//         cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+//     }
+// });
+const storage = multer.memoryStorage(); // Store files in memory for S3 upload
 
 const upload = multer({
     storage: storage,
@@ -103,16 +123,46 @@ app.post('/upload', upload.single('image'), async (req, res) => {
         return res.status(400).json({ error: 'No image file uploaded.' });
     }
 
-    const imagePath = req.file.path;
+    // const imagePath = req.file.path; // File is in memory (req.file.buffer)
     const mimeType = req.file.mimetype;
+    const originalName = req.file.originalname;
     const stylePrompt = req.body.stylePrompt || "請用溫和幽默的方式評論這張圖片，保持友善但有趣的語調";
     const language = req.body.language || 'zh';
-    
-    console.log(`[Upload] Image received: ${imagePath}, MIME type: ${mimeType}`);
+
+    const s3FileName = `${uuidv4()}-${originalName}`;
+
+    console.log(`[Upload] Image received in memory: ${originalName}, MIME type: ${mimeType}`);
     console.log(`[Upload] Style: ${req.body.style}, Language: ${language}`);
+    console.log(`[S3 Upload] Attempting to upload to S3 bucket: ${AWS_S3_BUCKET_NAME} as ${s3FileName}`);
 
     try {
-        const imagePart = fileToGenerativePart(imagePath, mimeType);
+        // Upload to S3
+        const s3UploadParams = {
+            Bucket: AWS_S3_BUCKET_NAME,
+            Key: s3FileName,
+            Body: req.file.buffer,
+            ContentType: mimeType,
+            // ACL: 'public-read' // Optional: if you want the file to be publicly readable by default
+        };
+
+        const s3Data = await s3.upload(s3UploadParams).promise();
+        const s3ImageUrl = s3Data.Location;
+        console.log(`[S3 Upload] Successfully uploaded to S3: ${s3ImageUrl}`);
+
+        // Prepare image for Gemini API using the S3 URL or directly from buffer if preferred by API
+        // For Gemini, it's better to send the image data directly if possible, or ensure the S3 URL is accessible.
+        // Here, we'll use the buffer directly as fileToGenerativePart expects a local path or buffer.
+        // To use S3 URL with Gemini, you'd need to ensure Gemini can fetch from that URL.
+        // For simplicity and directness, we'll use the buffer for Gemini.
+        const imagePart = {
+            inlineData: {
+                data: req.file.buffer.toString("base64"),
+                mimeType
+            },
+        };
+        // Or, if you want to use the S3 URL and ensure Gemini can access it:
+        // const imagePart = { externalData: { uri: s3ImageUrl, mimeType } };
+        // Make sure your S3 bucket policy allows Gemini to access the image if using externalData.
         
         // Use the style prompt from frontend with language-specific base prompt
         const basePrompts = {
@@ -144,25 +194,18 @@ app.post('/upload', upload.single('image'), async (req, res) => {
         // Image generation based on AI comment is removed.
 
         // Optional: Delete the uploaded file after processing
-        // fs.unlink(imagePath, (err) => {
-        //     if (err) console.error("[Upload] Error deleting temp file:", err);
-        //     else console.log("[Upload] Temp file deleted:", imagePath);
-        // });
+        // No local file to delete as it was in memory
 
         res.json({ 
-            message: 'Image processed successfully!', 
+            message: 'Image processed successfully and uploaded to S3!', 
             aiComment: aiComment,
-            uploadedImageUrl: `/uploads/${path.basename(imagePath)}` // If you want to show the uploaded image too
+            uploadedImageUrl: s3ImageUrl // Return the S3 URL
         });
 
     } catch (error) {
         console.error("[Upload] Error processing image with Gemini API:", error);
-        // Attempt to delete the file even if an error occurs during API processing
-        // fs.unlink(imagePath, (err) => {
-        //     if (err) console.error("[Upload] Error deleting temp file after API error:", err);
-        //     else console.log("[Upload] Temp file deleted after API error:", imagePath);
-        // });
-        res.status(500).json({ error: 'Failed to process image with AI. ' + error.message });
+        // No local file to delete
+        res.status(500).json({ error: 'Failed to process image with AI or upload to S3. ' + error.message });
     }
 });
 
