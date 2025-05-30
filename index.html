@@ -1069,8 +1069,15 @@
             }
             
             .top-controls {
-                flex-direction: column;
-                gap: 10px;
+                /* flex-direction: column; */ /* Keep them in a row */
+                gap: 8px; /* Adjust gap for smaller screens */
+                right: 10px; /* Adjust position for smaller screens */
+                top: 10px;
+            }
+
+            .control-btn {
+                padding: 6px 10px; /* Adjust padding for smaller buttons */
+                font-size: 0.8em; /* Adjust font size for smaller buttons */
             }
             
             .share-buttons, .warning-buttons {
@@ -1114,6 +1121,12 @@
                 width: 100%;
                 padding: 10px;
                 font-size: 0.85em;
+            }
+
+            .top-controls .control-btn {
+                width: auto; /* Override the 100% width for top control buttons */
+                padding: 5px 8px; /* Further adjust padding for very small screens */
+                font-size: 0.75em; /* Further adjust font size */
             }
             
             #uploadForm {
